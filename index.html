@@ -1,0 +1,112 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create and monetize your AI influencer with our cutting-edge AI platform. Generate hyper-realistic content in minutes!">
+    <meta name="keywords" content="AI influencer, virtual celebrity, AI content creation, monetize AI">
+    <meta name="author" content="Your Name">
+    <title>Create Your AI Influencer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-r from-purple-600 to-blue-500 text-white py-16">
+        <div class="container mx-auto text-center px-4">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">Build Your AI Influencer Today</h1>
+            <p class="text-lg md:text-xl mb-6">Generate hyper-realistic content and monetize your virtual persona with ease.</p>
+            <button onclick="startCreating()" class="bg-white text-purple-600 font-semibold py-3 px-6 rounded-lg hover:bg-gray-200 transition">Get Started</button>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Why Choose Our Platform?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <h3 class="text-xl font-semibold mb-2">Hyper-Realistic Content</h3>
+                    <p class="text-gray-600">Create stunning images, videos, and voices that look and sound like real celebrities using advanced AI.</p>
+                </div>
+                <div class="text-center">
+                    <h3 class="text-xl font-semibold mb-2">Easy Customization</h3>
+                    <p class="text-gray-600">Tailor your AI influencer's look, style, and content to match your brand or vision.</p>
+                </div>
+                <div class="text-center">
+                    <h3 class="text-xl font-semibold mb-2">Monetize Instantly</h3>
+                    <p class="text-gray-600">Earn money by sharing your AI influencer's content on social media or through partnerships.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-gray-100 text-center">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-4">Ready to Create Your Virtual Star?</h2>
+            <p class="text-lg text-gray-600 mb-6">Join thousands of creators earning with their AI influencers.</p>
+            <button onclick="startCreating()" class="bg-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-purple-700 transition">Start Now</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 Your AI Influencer Platform. All rights reserved.</p>
+            <div class="mt-4">
+                <a href="#" class="text-gray-400 hover:text-white mx-2">Privacy Policy</a>
+                <a href="#" class="text-gray-400 hover:text-white mx-2">Terms of Service</a>
+                <a href="#" class="text-gray-400 hover:text-white mx-2">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function startCreating() {
+            // Placeholder for AI content generation logic
+            alert("Let's create your AI influencer! Enter your preferences to begin.");
+            // In a real app, this could redirect to a dashboard or trigger an API call
+            // Example: fetch('/api/generate-influencer', { method: 'POST', body: JSON.stringify({ prompt: 'Create a fashion influencer' }) })
+        }
+    </script>
+</body>
+</html>
